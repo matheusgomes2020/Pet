@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "942449978596",
+    "project_id": "pett-48851",
+    "storage_bucket": "pett-48851.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942449978596:android:ee2d189956a80cfe4e90f1",
+        "android_client_info": {
+          "package_name": "com.matheus.pet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942449978596-96tlveuof9e6o2i2ts0rksg0fdktol8i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYMa0dJCoUuCCb6T-RnvwvvcxA4tjUS6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942449978596-96tlveuof9e6o2i2ts0rksg0fdktol8i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
