@@ -4,10 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/drawable/background_edit_text.xml" value="0.2645" />
+        <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/layout/activity_cadastro.xml" value="0.33" />
         <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/layout/activity_logar.xml" value="0.2777777777777778" />
-        <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/layout/activity_login.xml" value="0.2777777777777778" />
+        <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/layout/activity_main.xml" value="0.3435185185185185" />
         <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/layout/activity_profile.xml" value="0.2777777777777778" />
+        <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/layout/toolbar.xml" value="0.2578125" />
+        <entry key="..\:/Users/batat/AndroidStudioProjects/Pet/app/src/main/res/menu/menu_main.xml" value="0.346875" />
       </map>
     </option>
   </component>
