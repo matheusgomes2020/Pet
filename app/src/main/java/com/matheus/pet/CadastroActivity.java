@@ -32,13 +32,13 @@ public class CadastroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
 
-        editNome = findViewById( R.id.textNomeCadastro );
-        editData = findViewById( R.id.textDataCadastro );
-        editEndereco = findViewById( R.id.textenderecoCadastro );
-        editTelefone = findViewById( R.id.texTelefoneCadastro );
+        editNome = findViewById( R.id.textNomePet);
+        editData = findViewById( R.id.textRacaPet);
+        editEndereco = findViewById( R.id.textIdadePet);
+        editTelefone = findViewById( R.id.textDataPet);
         editEmail = findViewById( R.id.textEmailCadastro );
         editSenha = findViewById( R.id.textSenhaCadastro );
-        botaoCadastrar = findViewById( R.id.botaoEntrar);
+        botaoCadastrar = findViewById( R.id.botaoContato);
 
     }
 

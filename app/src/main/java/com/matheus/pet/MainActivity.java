@@ -3,9 +3,12 @@ package com.matheus.pet;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +29,8 @@ import com.matheus.pet.helper.Base64custom;
 import com.matheus.pet.helper.UsuarioFirebase;
 import com.matheus.pet.model.PetPerdido;
 import com.matheus.pet.model.Usuario;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText,editText2, editText3;
     private Button button;
     private String identificadorUsuario;
+    private RecyclerView recyclerViewListaPets;
+    private ValueEventListener valueEventListenerPets;
+    private FirebaseUser usuarioAtual;
+    private ArrayList<PetPerdido> listaPetPerdidos = new ArrayList<>();
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -52,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
         toolbar.setTitle( usuarioLogado.getNome() );
         toolbar.setSubtitle( usuarioLogado.getEmail() );
-        toolbar.setTitleTextColor(R.color.black);
-        toolbar.setSubtitleTextColor(R.color.black);
+        //toolbar.setTitleTextColor(R.color.black);
+        //.setSubtitleTextColor(R.color.black);
         setSupportActionBar( toolbar );
 
         textData = findViewById( R.id.textViewData );
@@ -69,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
         database = ConfiguracaoFirebase.getFirebaseDatabase();
         Usuario u = UsuarioFirebase.getdadosUsuarioLogado();
+        petsRef = ConfiguracaoFirebase.getFirebaseDatabase().child("pets").child(identificadorUsuario);
+        usuarioAtual = UsuarioFirebase.getUsuarioAtual();
 
         identificadorUsuario = Base64custom.codificarBase64( u.getEmail() );
 
@@ -123,8 +135,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void a( View view ){
+
+        Intent i = new Intent( MainActivity.this, CadastroPetActivity.class );
+        startActivity( i );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recuperarPets();
+
+        for ( PetPerdido p : listaPetPerdidos  ){
+            Log.i( "Lista",  p.getNome());
+        }
 
 
+    }
 
     public void deslogarUsuario(){
 
@@ -158,4 +185,29 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
+    public void recuperarPets(){
+
+        valueEventListenerPets = petsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for ( DataSnapshot dados: snapshot.getChildren() ){
+
+                    PetPerdido petPerdido = dados.getValue( PetPerdido.class );
+
+                    listaPetPerdidos.add( petPerdido );
+                    Log.i("aa", "b:" + petPerdido.getNome());
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 }
+

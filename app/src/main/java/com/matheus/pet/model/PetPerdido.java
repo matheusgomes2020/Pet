@@ -13,6 +13,8 @@ public class PetPerdido implements Serializable {
     private String idade;
     private String foto;
     private String dataPerdido;
+    private String raca;
+    private String ultimaLocalizacao;
 
     public PetPerdido() {
     }
@@ -65,5 +67,21 @@ public class PetPerdido implements Serializable {
 
     public void setDataPerdido(String dataPerdido) {
         this.dataPerdido = dataPerdido;
+    }
+
+    public String getRaca() {
+        return raca;
+    }
+
+    public void setRaca(String raca) {
+        this.raca = raca;
+    }
+
+    public String getUltimaLocalizacao() {
+        return ultimaLocalizacao;
+    }
+
+    public void setUltimaLocalizacao(String ultimaLocalizacao) {
+        this.ultimaLocalizacao = ultimaLocalizacao;
     }
 }

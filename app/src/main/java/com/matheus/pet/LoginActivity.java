@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         textEmail = findViewById( R.id.campoEmailLogin );
         textSenha = findViewById( R.id.campoSenhaLogin );
         googleSignInBtn = findViewById( R.id.googleSignInBtn );
-        botaoLogar = findViewById( R.id.botaoEntrar );
+        botaoLogar = findViewById( R.id.botaoContato);
 
         //Configure the Google Sigin
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder( GoogleSignInOptions.DEFAULT_SIGN_IN )
