@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textData, textEndereco, textTelefone;
     private EditText editText,editText2, editText3;
     private Button button;
+    private FloatingActionButton fab;
     private String identificadorUsuario;
     private RecyclerView recyclerViewListaPets;
     private PetsAdapter adapter;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser usuarioAtual;
     private ArrayList<PetPerdido> listaPetPerdidos = new ArrayList<>();
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint({"ResourceAsColor", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,18 +71,25 @@ public class MainActivity extends AppCompatActivity {
         //.setSubtitleTextColor(R.color.black);
         setSupportActionBar( toolbar );
 
+        fab = findViewById( R.id.button2 );
+
+        /*
         textData = findViewById( R.id.textViewData );
         textEndereco = findViewById( R.id.textViewEndereco );
         textTelefone = findViewById( R.id.textViewTelefone );
 
-        recyclerViewListaPets = findViewById(R.id.recyclerListaPets);
+
 
         editText = findViewById(R.id.editTextTextPersonName);
         editText2 = findViewById(R.id.editTextTextPersonName2);
-        editText3 = findViewById(R.id.editTextTextPersonName3);
+        editText3 = findViewById(R.id.editTextTextP
+        ersonName3);
+
         button = findViewById(R.id.button3);
 
+         */
 
+        recyclerViewListaPets = findViewById(R.id.recyclerListaPets);
 
         database = ConfiguracaoFirebase.getFirebaseDatabase();
         Usuario u = UsuarioFirebase.getdadosUsuarioLogado();
@@ -100,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewListaPets.setAdapter( adapter );
 
 
-        button.setOnClickListener(new View.OnClickListener() {
+        /*button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PetPerdido petPerdido = new PetPerdido();
@@ -118,9 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 pets.setValue( petPerdido );
 
             }
-        });
-
-        database.child("usuarios").child( identificadorUsuario ).addValueEventListener(new ValueEventListener() {
+         database.child("usuarios").child( identificadorUsuario ).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -136,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        */
 
 
 
