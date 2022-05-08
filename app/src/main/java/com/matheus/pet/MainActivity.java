@@ -3,6 +3,7 @@ package com.matheus.pet;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.matheus.pet.adapter.PetsAdapter;
 import com.matheus.pet.config.ConfiguracaoFirebase;
 import com.matheus.pet.helper.Base64custom;
 import com.matheus.pet.helper.UsuarioFirebase;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private Button button;
     private String identificadorUsuario;
     private RecyclerView recyclerViewListaPets;
+    private PetsAdapter adapter;
     private ValueEventListener valueEventListenerPets;
     private FirebaseUser usuarioAtual;
     private ArrayList<PetPerdido> listaPetPerdidos = new ArrayList<>();
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         textEndereco = findViewById( R.id.textViewEndereco );
         textTelefone = findViewById( R.id.textViewTelefone );
 
+        recyclerViewListaPets = findViewById(R.id.recyclerListaPets);
+
         editText = findViewById(R.id.editTextTextPersonName);
         editText2 = findViewById(R.id.editTextTextPersonName2);
         editText3 = findViewById(R.id.editTextTextPersonName3);
@@ -79,10 +84,21 @@ public class MainActivity extends AppCompatActivity {
 
         database = ConfiguracaoFirebase.getFirebaseDatabase();
         Usuario u = UsuarioFirebase.getdadosUsuarioLogado();
-        petsRef = ConfiguracaoFirebase.getFirebaseDatabase().child("pets").child(identificadorUsuario);
+
         usuarioAtual = UsuarioFirebase.getUsuarioAtual();
 
         identificadorUsuario = Base64custom.codificarBase64( u.getEmail() );
+        petsRef = ConfiguracaoFirebase.getFirebaseDatabase().child("pets").child( identificadorUsuario );
+
+        //configurar adapter
+        adapter = new PetsAdapter(listaPetPerdidos, getApplicationContext() );
+
+        //configurar recyclerview
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager( getApplicationContext() );
+        recyclerViewListaPets.setLayoutManager( layoutManager );
+        recyclerViewListaPets.setHasFixedSize( true );
+        recyclerViewListaPets.setAdapter( adapter );
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,9 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 database = ConfiguracaoFirebase.getFirebaseDatabase();
                 DatabaseReference pets = database.child("pets");
 
-                pets.child( identificadorUsuario )
-                        .push()
-                        .setValue( petPerdido );
+                pets.setValue( petPerdido );
 
             }
         });
@@ -146,10 +160,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         recuperarPets();
 
-        for ( PetPerdido p : listaPetPerdidos  ){
-            Log.i( "Lista",  p.getNome());
-        }
-
 
     }
 
@@ -187,6 +197,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public void recuperarPets(){
 
+        listaPetPerdidos.clear();
+
         valueEventListenerPets = petsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -196,9 +208,10 @@ public class MainActivity extends AppCompatActivity {
                     PetPerdido petPerdido = dados.getValue( PetPerdido.class );
 
                     listaPetPerdidos.add( petPerdido );
-                    Log.i("aa", "b:" + petPerdido.getNome());
 
                 }
+
+                adapter.notifyDataSetChanged();
 
             }
 

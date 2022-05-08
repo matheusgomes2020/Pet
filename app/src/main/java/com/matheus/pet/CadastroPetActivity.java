@@ -91,7 +91,6 @@ public class CadastroPetActivity extends AppCompatActivity {
                 PetPerdido petPerdido = new PetPerdido();
                 String nomeP = editNome.getText().toString();
                 String idadeP = editIdade.getText().toString();
-                String fotoP = "";
                 String dataP = editData.getText().toString();
                 String racaP = editRaca.getText().toString();
                 String ultimaP = editUltima.getText().toString();
@@ -99,7 +98,6 @@ public class CadastroPetActivity extends AppCompatActivity {
                 petPerdido.setNome( nomeP );
                 petPerdido.setIdade( dataP );
                 petPerdido.setDataPerdido( idadeP );
-                petPerdido.setFoto( fotoP );
                 petPerdido.setRaca( racaP );
                 petPerdido.setUltimaLocalizacao( ultimaP );
 
