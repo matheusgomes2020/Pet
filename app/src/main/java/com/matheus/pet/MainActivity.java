@@ -1,12 +1,14 @@
 package com.matheus.pet;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,9 +16,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +33,7 @@ import com.google.firebase.storage.StorageReference;
 import com.matheus.pet.adapter.PetsAdapter;
 import com.matheus.pet.config.ConfiguracaoFirebase;
 import com.matheus.pet.helper.Base64custom;
+import com.matheus.pet.helper.RecyclerItemClickListener;
 import com.matheus.pet.helper.UsuarioFirebase;
 import com.matheus.pet.model.PetPerdido;
 import com.matheus.pet.model.Usuario;
@@ -107,6 +112,82 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewListaPets.setLayoutManager( layoutManager );
         recyclerViewListaPets.setHasFixedSize( true );
         recyclerViewListaPets.setAdapter( adapter );
+
+        //Configurar evento de clique no recyclerview
+        recyclerViewListaPets.addOnItemTouchListener(
+                new RecyclerItemClickListener(
+                        getApplicationContext(),
+                        recyclerViewListaPets,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+
+                                PetPerdido petPerdidoSelecionado = listaPetPerdidos.get( position );
+                                Intent i = new Intent( getApplicationContext(), DescricaoPetActivity.class );
+                                i.putExtra( "petPerdidoIntent", petPerdidoSelecionado );
+                                startActivity( i );
+
+
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                                PetPerdido petPerdidoSelecionado = listaPetPerdidos.get( position );
+                                AlertDialog.Builder dialog = new AlertDialog.Builder( MainActivity.this );
+                                dialog.setTitle("Confirmar exclusão");
+                                dialog.setMessage("Deseja excluir  o pet " + petPerdidoSelecionado.getNome() + " ?");
+
+                                dialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        try {
+                                            petsRef.limitToFirst(1).addListenerForSingleValueEvent(
+                                                    new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            String chave = snapshot.getKey();
+                                                            petsRef.child( chave ).removeValue();
+
+                                                            Toast.makeText(getApplicationContext(),
+                                                                    "Pet " + petPerdidoSelecionado.getNome() + " excluído com sucesso!!!",
+                                                                    Toast.LENGTH_SHORT).show();
+
+                                                            adapter.notifyDataSetChanged();
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    }
+                                            );
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                            Toast.makeText(getApplicationContext(),
+                                                    "Não foi possível excluir o pet " +petPerdidoSelecionado.getNome() + "!!!",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                });
+
+                                dialog.setNegativeButton("Não", null);
+
+                                dialog.create();
+                                dialog.show();
+
+                            }
+
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+
+                            }
+                        }
+                ));
 
 
         /*button.setOnClickListener(new View.OnClickListener() {

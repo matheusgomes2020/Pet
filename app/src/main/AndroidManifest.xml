@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Pet"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".DescricaoPetActivity"
+            android:exported="false" />
+        <activity
             android:name=".CadastroPetActivity"
             android:exported="false"
             android:label="@string/title_activity_cadastro_pet"
