@@ -58,6 +58,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CadastroPetActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
@@ -80,6 +82,7 @@ public class CadastroPetActivity extends AppCompatActivity {
     private EditText editNome, editIdade, editData, editRaca, editUltima;
     private String foto;
     private TextView textView;
+    private CircleImageView circleImageView;
 
     private ProgressDialog progressDialog;
 
@@ -106,6 +109,7 @@ public class CadastroPetActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         imageButtonGaleria = findViewById(R.id.imageButton2);
         textView = findViewById(R.id.textView9);
+        circleImageView = findViewById(R.id.imageGrupo);
 
         //init progressDialog
         progressDialog = new ProgressDialog(this);
@@ -151,6 +155,7 @@ public class CadastroPetActivity extends AppCompatActivity {
 
                 if (imagem != null) {
 
+                    circleImageView.setImageBitmap( imagem );
                     //Recuperar dados da imagem para o firebase
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     imagem.compress(Bitmap.CompressFormat.JPEG, 70, baos);
@@ -182,6 +187,7 @@ public class CadastroPetActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
                             textView.setVisibility( View.VISIBLE );
+                            circleImageView.setVisibility( View.VISIBLE );
 
 
                             imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {

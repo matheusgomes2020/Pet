@@ -64,4 +64,7 @@ dependencies {
 
     // FirebaseUI for Cloud Storage
     implementation 'com.firebaseui:firebase-ui-storage:8.0.1'
+
+    /*Dependência para arredondamento de imagens*/
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
