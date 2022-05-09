@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3E9E9"
+    android:background="#E2E1E1"
     android:onClick="a"
     tools:context=".MainActivity">
 
@@ -30,15 +30,14 @@
         app:layout_constraintTop_toBottomOf="@+id/recyclerListaPets" />
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerListaPets"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/bg"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="2dp"
+        android:background="#E2E1E1"
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -32,8 +32,9 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_baseline_add_24"
         android:backgroundTint="#B6FFCE"
+        android:onClick="salvarPet"
+        android:src="@drawable/ic_baseline_add_24"
         app:fabSize="normal" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,7 +1,17 @@
 package com.matheus.pet.model;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
+import com.matheus.pet.CadastroActivity;
+import com.matheus.pet.CadastroPetActivity;
 import com.matheus.pet.config.ConfiguracaoFirebase;
 
 import java.io.Serializable;
@@ -19,13 +29,16 @@ public class PetPerdido implements Serializable {
     public PetPerdido() {
     }
 
-    public void salvar(){
+    public void salvar( String idUsuario ){
 
         DatabaseReference firebaseref = ConfiguracaoFirebase.getFirebaseDatabase();
-        DatabaseReference pet = firebaseref.child( "pets" ).push();
 
-        pet.setValue( this );
+        DatabaseReference pets = firebaseref.child( "pets" ).child( idUsuario ).push();
+        pets.setValue( this );
 
+
+        DatabaseReference pets2 = firebaseref.child("todospets").push();
+        pets2.setValue(this);
     }
 
     @Exclude
@@ -84,4 +97,7 @@ public class PetPerdido implements Serializable {
     public void setUltimaLocalizacao(String ultimaLocalizacao) {
         this.ultimaLocalizacao = ultimaLocalizacao;
     }
+
+
+
 }
