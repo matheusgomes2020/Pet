@@ -210,6 +210,7 @@ public class CadastroPetActivity extends AppCompatActivity {
         String racaP = editRaca.getText().toString();
         String ultimaP = editUltima.getText().toString();
 
+
         if (!nomeP.isEmpty()) {
             if (!idadeP.isEmpty()) {
                 if (!dataP.isEmpty()) {
@@ -224,6 +225,7 @@ public class CadastroPetActivity extends AppCompatActivity {
                             petPerdido.setRaca(racaP);
                             petPerdido.setUltimaLocalizacao(ultimaP);
                             petPerdido.setFoto(foto);
+                            petPerdido.setUsuario( usuarioLogado );
 
                             petPerdido.salvar( identificadorUsuario );
                             finish();

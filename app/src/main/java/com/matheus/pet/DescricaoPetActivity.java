@@ -14,7 +14,7 @@ import com.matheus.pet.model.PetPerdido;
 
 public class DescricaoPetActivity extends AppCompatActivity {
 
-    private TextView textNome, textIdade, textRaca, textData, textUltimalocalizacao;
+    private TextView textNome, textIdade, textRaca, textData, textUltimalocalizacao, texNomeUsuario, textEmailUsuario;
     private ImageView imageView;
 
     @Override
@@ -31,6 +31,9 @@ public class DescricaoPetActivity extends AppCompatActivity {
         textUltimalocalizacao = findViewById( R.id.t5 );
         imageView = findViewById( R.id.imageView );
 
+        texNomeUsuario = findViewById( R.id.textView10 );
+        textEmailUsuario = findViewById( R.id.textView11 );
+
 
         Bundle bundle = getIntent().getExtras();
 
@@ -43,6 +46,9 @@ public class DescricaoPetActivity extends AppCompatActivity {
         textIdade.setText( petPerdido.getIdade() );
         textData.setText( petPerdido.getDataPerdido() );
         textUltimalocalizacao.setText( petPerdido. getUltimaLocalizacao());
+
+        texNomeUsuario.setText( petPerdido.getUsuario().getNome() );
+        textEmailUsuario.setText( petPerdido.getUsuario().getEmail() );
 
         if ( petPerdido.getFoto() != null ){
 
