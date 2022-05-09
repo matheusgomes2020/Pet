@@ -1,6 +1,7 @@
 package com.matheus.pet;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,8 +26,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -76,6 +79,7 @@ public class CadastroPetActivity extends AppCompatActivity {
     private ArrayList<PetPerdido> petPerdidoList = new ArrayList<>();
     private EditText editNome, editIdade, editData, editRaca, editUltima;
     private String foto;
+    private TextView textView;
 
     private ProgressDialog progressDialog;
 
@@ -87,8 +91,9 @@ public class CadastroPetActivity extends AppCompatActivity {
         binding = ActivityCadastroPetBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_cadastro_pet);
 
-        setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setTitle("Cadastrar pet perdido");
+        setSupportActionBar(findViewById(R.id.toolbar));
+        getSupportActionBar().setTitle( "Cadastar pet perdido" );
+        getSupportActionBar().setDisplayHomeAsUpEnabled( true );
 
         //Validar permissões
         Permissao.validarPermissoes(permissoesNecessarias, this, 1);
@@ -100,6 +105,7 @@ public class CadastroPetActivity extends AppCompatActivity {
         editUltima = findViewById(R.id.textUltimaLocalizacaoPet);
         fab = findViewById(R.id.fab);
         imageButtonGaleria = findViewById(R.id.imageButton2);
+        textView = findViewById(R.id.textView9);
 
         //init progressDialog
         progressDialog = new ProgressDialog(this);
@@ -167,6 +173,7 @@ public class CadastroPetActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @SuppressLint("ResourceAsColor")
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -174,6 +181,8 @@ public class CadastroPetActivity extends AppCompatActivity {
                                     "Sucesso ao fazer upload da imagem",
                                     Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
+                            textView.setVisibility( View.VISIBLE );
+
 
                             imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override

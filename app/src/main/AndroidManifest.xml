@@ -21,12 +21,16 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".DescricaoPetActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            />
         <activity
             android:name=".CadastroPetActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_cadastro_pet"
-            android:theme="@style/Theme.Pet.NoActionBar" />
+            android:theme="@style/Theme.Pet.NoActionBar"
+            android:parentActivityName=".MainActivity"
+            />
         <activity
             android:name=".MainActivity"
             android:exported="true" />

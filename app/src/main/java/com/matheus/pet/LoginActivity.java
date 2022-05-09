@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient googleSignInClient;
-    private Button  botaoLogar;
+    private Button botaoLogar;
     private SignInButton googleSignInBtn;
     private EditText textEmail, textSenha;
 
@@ -46,20 +46,20 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView( R.layout.activity_login );
+        setContentView(R.layout.activity_login);
 
-        textEmail = findViewById( R.id.campoEmailLogin );
-        textSenha = findViewById( R.id.campoSenhaLogin );
-        googleSignInBtn = findViewById( R.id.googleSignInBtn );
-        botaoLogar = findViewById( R.id.botaoContato);
+        textEmail = findViewById(R.id.campoEmailLogin);
+        textSenha = findViewById(R.id.campoSenhaLogin);
+        googleSignInBtn = findViewById(R.id.googleSignInBtn);
+        botaoLogar = findViewById(R.id.botaoContato);
 
         //Configure the Google Sigin
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder( GoogleSignInOptions.DEFAULT_SIGN_IN )
-                .requestIdToken(  getString( R.string.default_web_client_id ))
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
-        googleSignInClient = GoogleSignIn.getClient( this, googleSignInOptions );
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -69,12 +69,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: begin Google SignIn");
                 Intent intent = googleSignInClient.getSignInIntent();
-                startActivityForResult( intent, RC_SIGN_IN );
+                startActivityForResult(intent, RC_SIGN_IN);
             }
         });
     }
 
-    public void logarUsuario(Usuario usuario){
+    public void logarUsuario(Usuario usuario) {
 
         firebaseAuth.signInWithEmailAndPassword(
                 usuario.getEmail(), usuario.getSenha()
@@ -82,19 +82,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
-                if( task.isSuccessful() ){
+                if (task.isSuccessful()) {
                     abrirTelaPrincipal();
-                }else {
+                } else {
 
                     String excecao = "";
                     try {
                         throw task.getException();
-                    }catch ( FirebaseAuthInvalidUserException e ) {
+                    } catch (FirebaseAuthInvalidUserException e) {
                         excecao = "Usuário não está cadastrado.";
-                    }catch ( FirebaseAuthInvalidCredentialsException e ){
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
                         excecao = "E-mail e senha não correspondem a um usuário cadastrado";
-                    }catch (Exception e){
-                        excecao = "Erro ao cadastrar usuário: "  + e.getMessage();
+                    } catch (Exception e) {
+                        excecao = "Erro ao cadastrar usuário: " + e.getMessage();
                         e.printStackTrace();
                     }
                     Toast.makeText(LoginActivity.this,
@@ -107,28 +107,28 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void validarAutenticacaoUsuario(View view){
+    public void validarAutenticacaoUsuario(View view) {
 
         //Recuperar textos dos campos
         String textoEmail = textEmail.getText().toString();
         String textoSenha = textSenha.getText().toString();
 
         //Validar se e-mail e senha foram digitados
-        if( !textoEmail.isEmpty() ){//verifica e-mail
-            if( !textoSenha.isEmpty() ){//verifica senha
+        if (!textoEmail.isEmpty()) {//verifica e-mail
+            if (!textoSenha.isEmpty()) {//verifica senha
 
                 Usuario usuario = new Usuario();
-                usuario.setEmail( textoEmail );
-                usuario.setSenha( textoSenha );
+                usuario.setEmail(textoEmail);
+                usuario.setSenha(textoSenha);
 
-                logarUsuario( usuario );
+                logarUsuario(usuario);
 
-            }else {
+            } else {
                 Toast.makeText(LoginActivity.this,
                         "Preencha a senha!",
                         Toast.LENGTH_SHORT).show();
             }
-        }else {
+        } else {
             Toast.makeText(LoginActivity.this,
                     "Preencha o email!",
                     Toast.LENGTH_SHORT).show();
@@ -143,17 +143,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            Log.d( TAG, "onActivityResult: Google Signin intent result" );
+            Log.d(TAG, "onActivityResult: Google Signin intent result");
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
 
             try {
                 //
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogleAccount( account.getIdToken() );
+                firebaseAuthWithGoogleAccount(account.getIdToken());
 
 
-            }catch (Exception e){
-                Log.d(TAG,"onActivityResult: " + e.getMessage());
+            } catch (Exception e) {
+                Log.d(TAG, "onActivityResult: " + e.getMessage());
             }
         }
     }
@@ -181,8 +181,6 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "onSuccess: UID: " + uid);
 
 
-
-
                         //Start profile activity
                         startActivity(new Intent(LoginActivity.this, LoginActivity.class));
                         finish();
@@ -191,18 +189,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
-
-
-    private void firebaseAuthWithGoogleAccount(String idToken){
-        Log.d( TAG, "setFirebaseAuthWithGoogleAccount: begin firebase auth with google account" );
-        AuthCredential credential = GoogleAuthProvider.getCredential( idToken, null );
-        firebaseAuth.signInWithCredential( credential )
+    private void firebaseAuthWithGoogleAccount(String idToken) {
+        Log.d(TAG, "setFirebaseAuthWithGoogleAccount: begin firebase auth with google account");
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        firebaseAuth.signInWithCredential(credential)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         //Sucesso
-                        Log.d( TAG, "onSuccess: Logged in" );
+                        Log.d(TAG, "onSuccess: Logged in");
 
                         //usuario logado
                         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
@@ -210,22 +205,21 @@ public class LoginActivity extends AppCompatActivity {
                         String uid = firebaseUser.getUid();
                         String email = firebaseUser.getEmail();
 
-                        Log.d( TAG, "onSuccess: E-mail: " + email );
-                        Log.d( TAG, "onSuccess: UID: " + uid );
+                        Log.d(TAG, "onSuccess: E-mail: " + email);
+                        Log.d(TAG, "onSuccess: UID: " + uid);
 
                         //checra se usu é novo
-                        if (authResult.getAdditionalUserInfo().isNewUser()){
-                            Log.d( TAG, "onSuccess: conta criada...\n" + email );
-                            Toast.makeText( LoginActivity.this, "conta criada...\n" + email, Toast.LENGTH_SHORT );
-                        }else {
-                            Log.d( TAG, "onSuccess: Existente...\n" + email );
-                            Toast.makeText( LoginActivity.this, "Existente...\n" + email, Toast.LENGTH_SHORT );
+                        if (authResult.getAdditionalUserInfo().isNewUser()) {
+                            Log.d(TAG, "onSuccess: conta criada...\n" + email);
+                            Toast.makeText(LoginActivity.this, "conta criada...\n" + email, Toast.LENGTH_SHORT);
+                        } else {
+                            Log.d(TAG, "onSuccess: Existente...\n" + email);
+                            Toast.makeText(LoginActivity.this, "Existente...\n" + email, Toast.LENGTH_SHORT);
                         }
 
                         //Start profile activity
-                        startActivity( new Intent( LoginActivity.this, MainActivity.class ) );
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
-
 
 
                     }
@@ -233,7 +227,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d( TAG, "onFailure: Logged in failled " + e.getMessage() );
+                        Log.d(TAG, "onFailure: Logged in failled " + e.getMessage());
                     }
                 });
     }
@@ -242,21 +236,21 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser usuarioAtual = firebaseAuth.getCurrentUser();
-        if ( usuarioAtual != null ){
+        if (usuarioAtual != null) {
             abrirTelaPrincipal();
         }
     }
 
-    public void abrirTelaCadastro(View view ){
+    public void abrirTelaCadastro(View view) {
 
-        Intent i = new Intent( LoginActivity.this, CadastroActivity.class );
-        startActivity( i );
+        Intent i = new Intent(LoginActivity.this, CadastroActivity.class);
+        startActivity(i);
     }
 
-    public void abrirTelaPrincipal(){
+    public void abrirTelaPrincipal() {
 
-        Intent i = new Intent( LoginActivity.this, MainActivity.class );
-        startActivity( i );
+        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(i);
     }
 
 

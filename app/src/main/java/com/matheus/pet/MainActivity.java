@@ -1,6 +1,7 @@
 package com.matheus.pet;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private StorageReference storage;
     private Usuario usuarioLogado;
     private TextView textData, textEndereco, textTelefone;
-    private EditText editText,editText2, editText3;
+    private EditText editText, editText2, editText3;
     private Button button;
     private FloatingActionButton fab;
     private String identificadorUsuario;
@@ -70,13 +72,13 @@ public class MainActivity extends AppCompatActivity {
         identificadorUsuario = UsuarioFirebase.getIdentificadorUsuario();
 
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
-        toolbar.setTitle( usuarioLogado.getNome() );
-        toolbar.setSubtitle( usuarioLogado.getEmail() );
+        toolbar.setTitle(usuarioLogado.getNome());
+        toolbar.setSubtitle(usuarioLogado.getEmail());
         //toolbar.setTitleTextColor(R.color.black);
         //.setSubtitleTextColor(R.color.black);
-        setSupportActionBar( toolbar );
+        setSupportActionBar(toolbar);
 
-        fab = findViewById( R.id.button2 );
+        fab = findViewById(R.id.button2);
 
         /*
         textData = findViewById( R.id.textViewData );
@@ -101,17 +103,18 @@ public class MainActivity extends AppCompatActivity {
 
         usuarioAtual = UsuarioFirebase.getUsuarioAtual();
 
-        identificadorUsuario = Base64custom.codificarBase64( u.getEmail() );
-        petsRef = ConfiguracaoFirebase.getFirebaseDatabase().child("pets").child( identificadorUsuario );
+        identificadorUsuario = Base64custom.codificarBase64(u.getEmail());
+        petsRef = ConfiguracaoFirebase.getFirebaseDatabase().child("pets").child(identificadorUsuario);
+        DatabaseReference petsRef2 = ConfiguracaoFirebase.getFirebaseDatabase().child("pets").child(identificadorUsuario);
 
         //configurar adapter
-        adapter = new PetsAdapter(listaPetPerdidos, getApplicationContext() );
+        adapter = new PetsAdapter(listaPetPerdidos, getApplicationContext());
 
         //configurar recyclerview
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager( getApplicationContext() );
-        recyclerViewListaPets.setLayoutManager( layoutManager );
-        recyclerViewListaPets.setHasFixedSize( true );
-        recyclerViewListaPets.setAdapter( adapter );
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerViewListaPets.setLayoutManager(layoutManager);
+        recyclerViewListaPets.setHasFixedSize(true);
+        recyclerViewListaPets.setAdapter(adapter);
 
         //Configurar evento de clique no recyclerview
         recyclerViewListaPets.addOnItemTouchListener(
@@ -122,53 +125,28 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onItemClick(View view, int position) {
 
-                                PetPerdido petPerdidoSelecionado = listaPetPerdidos.get( position );
-                                Intent i = new Intent( getApplicationContext(), DescricaoPetActivity.class );
-                                i.putExtra( "petPerdidoIntent", petPerdidoSelecionado );
-                                startActivity( i );
-
+                                PetPerdido petPerdidoSelecionado = listaPetPerdidos.get(position);
+                                Intent i = new Intent(getApplicationContext(), DescricaoPetActivity.class);
+                                i.putExtra("petPerdidoIntent", petPerdidoSelecionado);
+                                startActivity(i);
 
                             }
 
                             @Override
                             public void onLongItemClick(View view, int position) {
 
-                                PetPerdido petPerdidoSelecionado = listaPetPerdidos.get( position );
-                                AlertDialog.Builder dialog = new AlertDialog.Builder( MainActivity.this );
+                                PetPerdido petPerdidoSelecionado = listaPetPerdidos.get(position);
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
                                 dialog.setTitle("Confirmar exclusão");
                                 dialog.setMessage("Deseja excluir  o pet " + petPerdidoSelecionado.getNome() + " ?");
 
                                 dialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        try {
-                                            petsRef.limitToFirst(1).addListenerForSingleValueEvent(
-                                                    new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            String chave = snapshot.getKey();
-                                                            petsRef.child( chave ).removeValue();
 
-                                                            Toast.makeText(getApplicationContext(),
-                                                                    "Pet " + petPerdidoSelecionado.getNome() + " excluído com sucesso!!!",
-                                                                    Toast.LENGTH_SHORT).show();
+                                        petsRef.child(petPerdidoSelecionado.getId()).removeValue();
+                                        Log.d("keyUltima", petPerdidoSelecionado.getId());
 
-                                                            adapter.notifyDataSetChanged();
-
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                                        }
-                                                    }
-                                            );
-                                        }catch (Exception e){
-                                            e.printStackTrace();
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Não foi possível excluir o pet " +petPerdidoSelecionado.getNome() + "!!!",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
                                     }
 
                                 });
@@ -178,71 +156,27 @@ public class MainActivity extends AppCompatActivity {
                                 dialog.create();
                                 dialog.show();
 
+                                recarregarPets();
+
                             }
 
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-
                             }
+
+
                         }
-                ));
 
+                )
 
-        /*button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PetPerdido petPerdido = new PetPerdido();
-                String nomeP = editText.getText().toString();
-                String idadeP = editText2.getText().toString();
-                String dataP = editText3.getText().toString();
-
-                petPerdido.setNome( nomeP );
-                petPerdido.setIdade( dataP );
-                petPerdido.setDataPerdido( idadeP );
-
-                database = ConfiguracaoFirebase.getFirebaseDatabase();
-                DatabaseReference pets = database.child("pets");
-
-                pets.setValue( petPerdido );
-
-            }
-         database.child("usuarios").child( identificadorUsuario ).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                Usuario usuario = snapshot.getValue( Usuario.class );
-                textData.setText( usuario.getData() );
-                textEndereco.setText( usuario.getEndereco() );
-                textTelefone.setText( usuario.getTelefone() );
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        */
-
-
-
-
-
-
-
-
-
-
+        );
     }
 
 
-    public void a( View view ){
+    public void a(View view) {
 
-        Intent i = new Intent( MainActivity.this, CadastroPetActivity.class );
-        startActivity( i );
+        Intent i = new Intent(MainActivity.this, CadastroPetActivity.class);
+        startActivity(i);
     }
 
     @Override
@@ -253,11 +187,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void deslogarUsuario(){
+    public void deslogarUsuario() {
 
         try {
             firebaseAuth.signOut();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -265,13 +199,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch ( item.getItemId() ){
-            case R.id.menu_sair :
+        switch (item.getItemId()) {
+            case R.id.menu_sair:
                 deslogarUsuario();
                 finish();
                 break;
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -280,37 +212,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate( R.menu.menu_main, menu );
-
+        inflater.inflate(R.menu.menu_main, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
-    public void recuperarPets(){
 
+
+    public void recarregarPets() {
+        listaPetPerdidos.clear();
+        adapter = new PetsAdapter(listaPetPerdidos, getApplicationContext());
+        recyclerViewListaPets.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void recuperarPets() {
         listaPetPerdidos.clear();
 
         valueEventListenerPets = petsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dados : snapshot.getChildren()) {
 
-                for ( DataSnapshot dados: snapshot.getChildren() ){
+                    PetPerdido petPerdido = dados.getValue(PetPerdido.class);
+                    petPerdido.setId(dados.getKey());
+                    Log.d("keyUsuario", petPerdido.getId());
 
-                    PetPerdido petPerdido = dados.getValue( PetPerdido.class );
-
-                    listaPetPerdidos.add( petPerdido );
-
+                    listaPetPerdidos.add(petPerdido);
                 }
-
                 adapter.notifyDataSetChanged();
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
-
 }
 
