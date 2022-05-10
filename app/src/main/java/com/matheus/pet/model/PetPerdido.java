@@ -28,6 +28,13 @@ public class PetPerdido implements Serializable {
     private Usuario usuario;
 
     public PetPerdido() {
+
+        DatabaseReference database = ConfiguracaoFirebase.getFirebaseDatabase();
+        DatabaseReference petRef = database.child( "pets" );
+
+        String idFirebase = petRef.push().getKey();
+        setId( idFirebase );
+
     }
 
     public void salvar( String idUsuario ){
@@ -42,7 +49,7 @@ public class PetPerdido implements Serializable {
         pets2.setValue(this);
     }
 
-    @Exclude
+
     public String getId() {
         return id;
     }

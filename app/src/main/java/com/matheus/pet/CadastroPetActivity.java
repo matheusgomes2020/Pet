@@ -83,6 +83,7 @@ public class CadastroPetActivity extends AppCompatActivity {
     private String foto;
     private TextView textView;
     private CircleImageView circleImageView;
+    private PetPerdido petP;
 
     private ProgressDialog progressDialog;
 
@@ -110,6 +111,8 @@ public class CadastroPetActivity extends AppCompatActivity {
         imageButtonGaleria = findViewById(R.id.imageButton2);
         textView = findViewById(R.id.textView9);
         circleImageView = findViewById(R.id.imageGrupo);
+
+        petP = new PetPerdido();
 
         //init progressDialog
         progressDialog = new ProgressDialog(this);
@@ -166,7 +169,7 @@ public class CadastroPetActivity extends AppCompatActivity {
                             .child("imagens")
                             .child("pets")
                             //.child( identificadorUsuario )
-                            .child(identificadorUsuario + ".jpeg");
+                            .child(petP.getId() + ".jpeg");
 
                     UploadTask uploadTask = imagemRef.putBytes(dadosImagem);
                     uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -193,9 +196,8 @@ public class CadastroPetActivity extends AppCompatActivity {
                             imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
-                                    Uri url = task.getResult();
-                                    foto = url.toString();
-                                    Log.i("fotoRecebida: ", foto);
+                                    String url = task.getResult().toString();
+                                    petP.setFoto( url );
                                 }
                             });
 
@@ -223,17 +225,15 @@ public class CadastroPetActivity extends AppCompatActivity {
                     if (!racaP.isEmpty()) {
                         if (!ultimaP.isEmpty()) {
 
-                            PetPerdido petPerdido = new PetPerdido();
 
-                            petPerdido.setNome(nomeP);
-                            petPerdido.setIdade(idadeP);
-                            petPerdido.setDataPerdido(dataP);
-                            petPerdido.setRaca(racaP);
-                            petPerdido.setUltimaLocalizacao(ultimaP);
-                            petPerdido.setFoto(foto);
-                            petPerdido.setUsuario( usuarioLogado );
+                            petP.setNome(nomeP);
+                            petP.setIdade(idadeP);
+                            petP.setDataPerdido(dataP);
+                            petP.setRaca(racaP);
+                            petP.setUltimaLocalizacao(ultimaP);
+                            petP.setUsuario( usuarioLogado );
 
-                            petPerdido.salvar( identificadorUsuario );
+                            petP.salvar( identificadorUsuario );
                             finish();
 
                         } else {Toast.makeText(CadastroPetActivity.this, "Preencha a última localização!", Toast.LENGTH_SHORT).show(); }

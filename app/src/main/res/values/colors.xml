@@ -11,6 +11,7 @@
     <color name="colorPrimary">#E5F36A</color>
     <color name="colorPrimaryVariant">#E5F36A</color>
     <color name="colorOnPrimary">#F6FFA4</color>
-    <color name="backgroundcadastropet">#E6E0E0</color>
+    <color name="backgroundcadastropetOriginal">#E6E0E0</color>
+    <color name="backgroundcadastropet">#F1EFEF</color>
     <color name="red">#E80C0C</color>
 </resources>
